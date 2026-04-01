@@ -1,0 +1,19 @@
+MEJORAS V9
+
+1. Se eliminó el módulo Facturación del menú principal.
+2. Toda la analítica quedó dentro de Estadísticas con pantallas internas:
+   - Resumen
+   - Tiempos
+   - Facturación mensual
+   - Vitrectomías
+3. Se agregaron gráficos de barras con fondo blanco, sin líneas horizontales y con etiquetas visibles.
+4. Se agregó % de vitrectomías sobre el total facturado.
+5. Se corrigió el filtro rápido:
+   - Pedir lente ahora muestra solo PEDIR LENTE.
+   - Esperando lente quedó separado.
+6. Se corrigió WhatsApp:
+   - El filtro Solo estado: LLEGÓ LENTE - PROGRAMAR CIRUGÍA ya no depende del quick filter de la pantalla principal.
+   - El mensaje de documentos ahora incluye también la dirección de Gualeguaychú.
+7. Se agregó la ruta /preparacion/ con su index.html para que el link público funcione mejor en GitHub Pages.
+8. Se ocultaron los KPI superiores de la pantalla principal.
+9. Se compactó la tabla principal para que tenga un aspecto más parecido a las capturas.

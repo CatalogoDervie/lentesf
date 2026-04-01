@@ -1,0 +1,61 @@
+AJUSTES DEFINITIVOS APLICADOS
+
+1) Estados unificados
+- Se creó una lógica central de workflow en js/state.js con claves internas.
+- Se separó correctamente:
+  PEDIR LENTE
+  ESPERANDO LENTE
+  LLEGÓ LENTE - PROGRAMAR CIRUGÍA
+  FECHA PROGRAMADA
+  REALIZADA - FALTA FACTURAR
+  FACTURADA
+  FACTURADA FALTA OTRO OJO
+  FINALIZADA
+- Se corrigió la normalización de labels viejos y alias.
+
+2) Filtros corregidos
+- Los módulos dejan de depender de la cola rápida principal.
+- Pedir lente, WhatsApp y Facturar ahora usan búsqueda / clínica / obra social, pero NO heredan quickFilter destructivo.
+- Se corrigió el bug que dejaba tablas vacías en módulos secundarios.
+
+3) Validación de datos
+- Se corrigió validarFila para no forzar FACTURADA cuando el valor venía raro o legacy.
+
+4) Pedir lente
+- Nuevo subfiltro interno:
+  Pedir lente / Esperando lente / Llegó lente - programar / Ver todo.
+
+5) WhatsApp
+- Nuevo selector interno de cola:
+  Llegó lente - programar / Fecha programada / Para facturar / Pedir lente / Esperando lente / Todos.
+- Se agregó el link de dirección de Gualeguaychú al mensaje de documentos.
+- Se mantiene el link público del sistema.
+
+6) Estadísticas
+- Rehechas sobre la lógica unificada de estados.
+- Facturación mensual usa mes de facturación real.
+- Se calcula vitrectomías por mes y % sobre total facturado.
+- Se mantienen pantallas internas dentro de un único módulo.
+
+7) Rutas públicas
+- Se reforzó /preparacion/ con archivo PDF local seguro.
+- Se reforzó /consentimiento/ con archivo PDF local seguro.
+
+ARCHIVOS PRINCIPALES MODIFICADOS
+- js/state.js
+- js/render.js
+- js/pedir-lente.js
+- js/whatsapp.js
+- js/facturar.js
+- js/estadisticas.js
+- css/styles.css
+- preparacion/index.html
+- consentimiento/index.html
+
+
+ACTUALIZACION 2026-04-01 B
+- Corregido quick filter de "Facturada falta el otro ojo" para que use la key unificada y no deje la tabla vacía.
+- Ajustada la lógica bilateral: si ya existe el episodio del otro ojo, el episodio facturado anterior pasa a FINALIZADA.
+- Rehecha la pantalla de Estadísticas para unir facturación + vitrectomías en una sola vista.
+- Agregada meta mensual de vitrectomías (16 por clínica), KPI de faltantes del mes foco y línea objetivo en gráfico.
+- Rehecha la lectura de tiempos usando transiciones reales (pedido→llegada, llegada→cirugía, cirugía→facturación) y no solo backlog abierto.

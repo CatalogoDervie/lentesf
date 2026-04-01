@@ -1,0 +1,49 @@
+VERSIÓN DE PRUEBA — FRONT REORGANIZADO
+
+Objetivo:
+- Probar una organización más cercana a una bandeja operativa diaria.
+- Menos foco en “mostrar todo” y más foco en:
+  1) módulo superior
+  2) cola principal
+  3) refinamientos simples
+  4) tabla de resolución
+
+Cambios principales:
+- Navegación superior rediseñada como módulos.
+- Colas de trabajo rediseñadas como tarjetas/botones con contador.
+- Refinamientos separados de la cola principal:
+  - búsqueda
+  - clínica
+  - obra social
+  - alertas silenciadas
+  - ocultar finalizadas sin acción
+- Acciones globales separadas en un bloque propio.
+- Resumen superior reducido a métricas más operativas.
+- Tabla principal simplificada a:
+  - paciente
+  - cola actual
+  - próxima acción
+  - fecha clave
+  - contexto
+  - alerta principal
+  - abrir
+- Botón de KPIs renombrado a “resumen”.
+
+Lógica mantenida:
+- Segundo ojo pendiente hasta que el otro ojo esté facturado.
+- “Esperando lente” se mantiene como estado.
+- Demoras gestionadas con alertas.
+- Facturar sigue funcionando con selección explícita en su pestaña.
+
+Archivos tocados:
+- index.html
+- css/styles.css
+- js/render.js
+
+Prueba sugerida:
+1. Cargar la página y revisar la barra superior.
+2. Probar cada módulo.
+3. Probar las colas principales.
+4. Refinar por clínica y obra social.
+5. Abrir varios pacientes desde la tabla.
+6. Confirmar que la pestaña Facturar siga funcionando.

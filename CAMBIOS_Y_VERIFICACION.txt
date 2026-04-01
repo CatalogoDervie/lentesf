@@ -1,0 +1,66 @@
+MEJORAS APLICADAS
+
+1) Inicio más robusto
+- Se agregó evento authReady.
+- app.js ahora arranca también si la sesión ya estaba validada antes de cargar el módulo.
+- Se evitó el escenario de pantalla visible pero vacía por carrera entre auth y app.js.
+
+2) Lógica de segundo ojo
+- Ya no alcanza con que exista el otro registro.
+- Para que deje de figurar como pendiente, el otro ojo debe estar FACTURADO.
+
+3) Esperando lente
+- Se mantiene el estado ESPERANDO LENTE.
+- La presión operativa pasa por alertas por demora, no por inventar estados nuevos.
+
+4) Operación diaria
+- La pestaña principal pasó a enfoque de operación.
+- Quick filters simplificados: HOY, PEDIR LENTE, PROGRAMAR, FACTURAR, ALERTAS, TODOS.
+- Se agregó barra de filtros activos.
+- Se agregó panel superior de trabajo diario con colas:
+  * Pedir lente
+  * Espera con demora
+  * Programar cirugía
+  * Listas para facturar
+  * Alertas críticas
+  * Cirugías hoy
+
+5) Tabla principal
+- Tabla más administrativa.
+- Más foco en paciente, estado del caso, tarea administrativa, alerta y botón Resolver.
+- Menos ruido operativo.
+
+6) Panel lateral
+- Se agregó resumen superior con:
+  * próxima acción
+  * fecha cirugía
+  * facturación
+  * situación del segundo ojo
+
+7) Facturar
+- La vista toma solo pacientes en estado REALIZADA.
+- Exige selección explícita.
+- Valida nombre, DNI, afiliado, ojo, dioptría y fecha de cirugía.
+- Muestra confirmación previa con resumen.
+
+VERIFICACIONES REALIZADAS
+
+A) Sintaxis
+- Se verificó sintaxis de todos los archivos JS con Node.
+
+B) Smoke tests
+- Se probó la lógica crítica de state.js:
+  * segundo ojo depende del otro ojo facturado
+  * quick filter FACTURAR
+  * quick filter PROGRAMAR
+- Se verificó import limpio de render.js y facturar.js.
+
+IMPORTANTE
+- No se pudo simular Firebase real ni conector local real dentro de este entorno.
+- Antes de publicar, conviene probar en navegador real:
+  1. login
+  2. carga de tabla
+  3. quick filters
+  4. panel lateral
+  5. facturar con y sin selección
+  6. paciente de 2 ojos con otro ojo no facturado
