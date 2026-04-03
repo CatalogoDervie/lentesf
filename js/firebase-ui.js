@@ -29,6 +29,7 @@ window.addEventListener('firestoreQueueFlushed', () => {
 
 // ── Guardar localmente + Firestore ────────────────────────────────────────
 let _backupDiarioHecho = false;
+let _lastRealtimeSig = '';
 
 export async function save(changedRow) {
   if (!_backupDiarioHecho) { backupDiario(); _backupDiarioHecho = true; }
@@ -161,6 +162,12 @@ export function ensureFirestoreRealtimeSync() {
   const unsub = window.firestoreConnector.listenRows((rows) => {
     const safeRows = Array.isArray(rows) ? rows : [];
     safeRows.forEach(r => { r.id = String(r.id ?? ''); });
+    const signature = safeRows
+      .map(r => `${r.id}|${r.updatedAt || ''}|${r.estadoFac || ''}|${r.estadoCir || ''}`)
+      .sort()
+      .join('~');
+    if (signature && signature === _lastRealtimeSig) return;
+    _lastRealtimeSig = signature;
     const ids = safeRows.map(r => parseInt(r.id, 10)).filter(n => Number.isFinite(n));
     const maxId = ids.length ? Math.max(...ids) : 0;
     DB.rows = safeRows;

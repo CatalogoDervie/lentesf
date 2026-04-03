@@ -68,8 +68,8 @@ export function renderPedirLente() {
     <div class="module-shell">
       <div class="module-topline">
         <div>
-          <div class="module-title">Pedir lente</div>
-          <div class="module-subtitle">Circuito operativo de lentes. Usa búsqueda, clínica y obra social de arriba, sin heredar la cola rápida de la tabla principal.</div>
+          <div class="module-title">Circuito de lentes</div>
+          <div class="module-subtitle">Incluye 3 etapas: pedir, esperando y llegó lente para programar. Usa búsqueda/clínica/obra social globales, pero maneja su filtro interno sin heredar la cola rápida de operación.</div>
         </div>
         <button class="btn primary" id="btnAbrirLentessModulo">🧿 Ejecutar Lentess con filtros actuales</button>
       </div>
