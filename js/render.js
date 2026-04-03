@@ -7,6 +7,7 @@ import {
   DB, selId, setSelId, sortCol, sortDir, setSortCol, setSortDir,
   currentTab, quickFilter, quickFilterLabel, SETTINGS, ALERT_SILENCES,
   estado, stateKey, WORKFLOW_KEYS, alertas, proximaAccion, filtered, duplicateNewestIds,
+  readDomFilterSnapshot,
   secondEyeMissing, getOtherEyeRow, isFacturadoCompleto, getDioptria, clinicaClass, practicasExtrasTexto, getEstadoCirCalculado, getFechaFacturadaBase,
   bc, estadoLabelCanon, estadoLabelNorm, normalizeId, findRow,
   validarFila, silenciarAlerta, reactivarAlerta, isSilenced,
@@ -108,9 +109,7 @@ export function renderActiveFiltersBar() {
   const bar = document.getElementById('activeFiltersBar');
   if (!bar) return;
   const chips = [];
-  const q = (document.getElementById('q')?.value || '').trim();
-  const fCli = document.getElementById('fCli')?.value || '';
-  const fOS = document.getElementById('fOS')?.value || '';
+  const { q = '', fCli = '', fOS = '' } = readDomFilterSnapshot();
   const showSilenced = !!document.getElementById('showSilenced')?.checked;
   const hideDone = !!document.getElementById('hideFinalizadasSinAccion')?.checked;
   const total = filtered().length;
@@ -162,7 +161,7 @@ export function toggleAlerts() {
 
 export function renderAlerts() {
   const showSilenced = !!document.getElementById('showSilenced')?.checked;
-  const withAlerts = DB.rows.map(p => ({ p, alerts: alertas(p) })).filter(x => x.alerts.length > 0);
+  const withAlerts = DB.rows.map(p => ({ p, alerts: alertas(p, { includeSilenced: true }) })).filter(x => x.alerts.length > 0);
   let flat = withAlerts.flatMap(x =>
     x.alerts.filter(a => showSilenced || !isSilenced(a)).map(a => ({ p: x.p, a }))
   );
@@ -538,17 +537,8 @@ export function refreshSidePanel(p) {
   if (ss) ss.textContent = `DNI ${p.dni} · ${p.clinica} · ${p.obraSocial}`;
 }
 
-// ── Estadísticas (lazy — carga Chart.js si es necesario) ──────────────────
+// ── Estadísticas (lazy) ───────────────────────────────────────────────────
 export function renderEstadisticasLazy() {
-  if (!window.Chart) {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';
-    s.onload = () => renderEstadisticasLazy();
-    document.head.appendChild(s);
-    const sv = document.getElementById('statsView');
-    if (sv) sv.innerHTML = '<div style="text-align:center;padding:80px;color:#64748b;font-size:14px">⏳ Cargando dashboard…</div>';
-    return;
-  }
   import('./estadisticas.js').then(m => m.renderEstadisticas()).catch(e => console.error('[stats]', e));
 }
 
@@ -558,14 +548,6 @@ export function renderFacturarLazy() {
     console.error('[facturar]', e);
     const el = document.getElementById('facturarView');
     if (el) el.innerHTML = '<div class="empty">No se pudo cargar la vista Facturar</div>';
-  });
-}
-
-export function renderFacturacionLazy() {
-  import('./facturacion.js').then(m => m.renderFacturacion()).catch(e => {
-    console.error('[facturacion]', e);
-    const el = document.getElementById('factView');
-    if (el) el.innerHTML = '<div class="empty">No se pudo cargar la vista de facturación</div>';
   });
 }
 

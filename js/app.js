@@ -470,15 +470,24 @@ function goBackSecondary() {
 
 // ── Configurar alertas ────────────────────────────────────────────────────
 function configurarAlertas() {
-  const dias = prompt(
-    'Días para alertas (separados por coma):\n' +
-    `Aviso: ${SETTINGS.WARN_DAYS}, Crítico: ${SETTINGS.CRIT_DAYS}`,
-    `${SETTINGS.WARN_DAYS},${SETTINGS.CRIT_DAYS}`
-  );
-  if (!dias) return;
-  const [w, c] = dias.split(',').map(n => parseInt(n.trim(), 10));
-  if (w > 0) SETTINGS.WARN_DAYS = w;
-  if (c > 0) SETTINGS.CRIT_DAYS = c;
+  const defs = [
+    ['Demora de lente (pedido sin llegada)', 'lens_delay_warn_days', 'lens_delay_crit_days'],
+    ['Lente llegó y no se programó', 'lens_arrived_not_scheduled_warn_days', 'lens_arrived_not_scheduled_crit_days'],
+    ['Cirugía realizada sin facturar', 'billing_not_done_warn_days', 'billing_not_done_crit_days'],
+    ['Facturada y falta segundo ojo', 'second_eye_missing_warn_days', 'second_eye_missing_crit_days'],
+  ];
+  for (const [label, warnKey, critKey] of defs) {
+    const currentWarn = Number(SETTINGS[warnKey] || 0);
+    const currentCrit = Number(SETTINGS[critKey] || 0);
+    const dias = prompt(
+      `${label}\nDías para alerta (aviso,crítico):`,
+      `${currentWarn},${currentCrit}`
+    );
+    if (dias === null) return;
+    const [w, c] = String(dias).split(',').map(n => parseInt(n.trim(), 10));
+    if (Number.isFinite(w) && w > 0) SETTINGS[warnKey] = w;
+    if (Number.isFinite(c) && c > 0) SETTINGS[critKey] = c;
+  }
   import('./state.js').then(({ saveSettings }) => { saveSettings(); render(); });
   toast('✓ Umbrales de alertas actualizados');
 }
@@ -957,7 +966,7 @@ window.startOriginalApp = async function () {
   } else {
     showSyncBadge('⟳ Esperando Firebase...', 'blue');
     setTimeout(async () => {
-      if (!window.__firestoreEnabled) {
+      if (!FIRESTORE_ENABLED) {
         await loadFromServer();
         normalizarData();
         render();

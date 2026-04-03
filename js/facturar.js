@@ -10,8 +10,8 @@ const LS_BASE = 'facturar_base_dir';
 const LS_OUT = 'facturar_output_dir';
 let selectedIds = new Set();
 
-function getBaseDir() { return localStorage.getItem(LS_BASE) || 'C:\\Users\\xd\\Desktop\\FACO-VITRE'; }
-function getOutputDir() { return localStorage.getItem(LS_OUT) || 'C:\\Users\\xd\\Desktop\\FACO-VITRE\\SALIDA'; }
+function getBaseDir() { return localStorage.getItem(LS_BASE) || ''; }
+function getOutputDir() { return localStorage.getItem(LS_OUT) || ''; }
 function setBaseDir(v) { localStorage.setItem(LS_BASE, (v || '').trim()); }
 function setOutputDir(v) { localStorage.setItem(LS_OUT, (v || '').trim()); }
 
@@ -113,9 +113,13 @@ async function ejecutarFacturacionDocs() {
 
   const invalid = validateRows(rows);
   if (invalid.length) {
-    const detalle = invalid.map(x => `${x.row.nombre || x.row.id}: ${x.faltan.join(', ')}`).join(' | ');
+    const detalle = invalid
+      .map(x => `• ${x.row.nombre || `ID ${x.row.id}`}: ${x.faltan.join(', ')}`)
+      .slice(0, 6)
+      .join(' · ');
+    const extra = invalid.length > 6 ? ` · y ${invalid.length - 6} paciente(s) más` : '';
     renderJobStatus('facturarJobStatus', 'err', `❌ Hay pacientes con datos incompletos: ${detalle}`);
-    toast('Hay pacientes con datos incompletos. Revisá nombre, DNI, afiliado, ojo, dioptría y fecha de cirugía.');
+    toast(`Hay ${invalid.length} paciente(s) con datos incompletos${extra}. Revisá nombre, DNI, afiliado, ojo, dioptría y fecha de cirugía.`);
     return;
   }
 

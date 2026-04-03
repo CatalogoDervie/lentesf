@@ -386,6 +386,10 @@ export function renderWhatsApp() {
         <button id='waBackMain' class='btn'>← Volver a página principal</button>
       </div>
 
+      <div style='font-size:12px;color:#475569;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px'>
+        <strong>Flujo sugerido:</strong> 1) confirmar turno, 2) marcar confirmación del paciente, 3) enviar documentos, 4) seguir tracking por paciente.
+      </div>
+
       <div class='wa-grid'>
         <div class='wa-card span-6'>
           <h4>Configuración de envío</h4>
@@ -403,10 +407,10 @@ export function renderWhatsApp() {
         </div>
 
         <div class='wa-card span-6'>
-          <h4>Acciones masivas</h4>
+          <h4>Acciones masivas por etapa</h4>
           <div class='wa-actions-main' style='display:flex;gap:8px;flex-wrap:wrap'>
-            <button id='waStartTurnos' class='btn primary'>📩 Enviar turnos (filtrados)</button>
-            <button id='waStartDocs' class='btn primary'>📎 Enviar docs (confirmados)</button>
+            <button id='waStartTurnos' class='btn primary'>1) 📩 Confirmar turnos</button>
+            <button id='waStartDocs' class='btn primary'>2) 📎 Enviar documentos</button>
           </div>
           <div class='wa-actions-secondary' style='margin-top:8px'>
             <button id='waStop' class='btn'>Detener</button>
@@ -417,7 +421,7 @@ export function renderWhatsApp() {
 
       <div id='waContador' style='margin:6px 0 2px;font-weight:700'>Enviados: ${WA_ENVIADOS} | Errores: ${WA_ERRORES}</div>
       <div id='waFilterMeta' class='wa-meta'></div>
-      <div class='wa-meta'>Dominio público del sistema: <a href='${WA_APP_PUBLIC_URL}' target='_blank' rel='noopener noreferrer'>${WA_APP_PUBLIC_URL}</a></div>
+      <div class='wa-meta'>Tracking y recetas post-documentos se mantienen activos. Dominio público del sistema: <a href='${WA_APP_PUBLIC_URL}' target='_blank' rel='noopener noreferrer'>${WA_APP_PUBLIC_URL}</a></div>
 
       <div class='wa-table-wrap'>
         <table class='wa-table'>

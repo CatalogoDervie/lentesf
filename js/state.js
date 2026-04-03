@@ -386,7 +386,7 @@ export function episodeIdFor(p) {
 export function alertas(p, opts = {}) {
   const today = toDateOnly(hoyISO());
   const res = [];
-  const showSilenced = !!(document.getElementById('showSilenced')?.checked);
+  const includeSilenced = !!opts.includeSilenced;
   const stKey = stateKey(p);
   const dni = String(p.dni || '').trim();
   const ojo = String(p.ojo || '').toUpperCase() || 'NA';
@@ -416,10 +416,10 @@ export function alertas(p, opts = {}) {
   }
 
   if (opts.raw) return res;
-  return res.filter(a => showSilenced || !isSilenced(a));
+  return includeSilenced ? res : res.filter(a => !isSilenced(a));
 }
 
-function getDomFilterSnapshot() {
+export function readDomFilterSnapshot() {
   return {
     q: rawText(document.getElementById('q')?.value || '').toLowerCase(),
     fCli: rawText(document.getElementById('fCli')?.value || ''),
@@ -428,8 +428,7 @@ function getDomFilterSnapshot() {
   };
 }
 
-// ── Filtrado de filas ─────────────────────────────────────────────────────
-export function filtered(opts = {}) {
+export function applyPatientFilters(rows, filterSnapshot, opts = {}) {
   const {
     includeSearch = true,
     includeClinic = true,
@@ -437,16 +436,14 @@ export function filtered(opts = {}) {
     includeEstadoSelect = true,
     includeQuickFilter = true,
     stateKeys = null,
-    sort = true,
     customPredicate = null,
   } = opts || {};
-
-  const { q, fCli, fEst, fOS } = getDomFilterSnapshot();
+  const { q = '', fCli = '', fEst = '', fOS = '' } = filterSnapshot || {};
   const forcedStateKeys = Array.isArray(stateKeys) && stateKeys.length
     ? stateKeys.map(normalizeWorkflowKey)
     : null;
 
-  let rows = DB.rows.filter(p => {
+  return rows.filter(p => {
     if (includeClinic && fCli && p.clinica !== fCli) return false;
     if (includeObraSocial && fOS && p.obraSocial !== fOS) return false;
     if (includeSearch && q) {
@@ -463,6 +460,31 @@ export function filtered(opts = {}) {
     const rowKey = stateKey(p);
     if (hideFinalizadasSinAccion && [WORKFLOW_KEYS.FACTURADA, WORKFLOW_KEYS.FINALIZADA].includes(rowKey) && pa.label === 'Sin acción' && !alertas(p).length) return false;
     return true;
+  });
+}
+
+// ── Filtrado de filas ─────────────────────────────────────────────────────
+export function filtered(opts = {}) {
+  const {
+    includeSearch = true,
+    includeClinic = true,
+    includeObraSocial = true,
+    includeEstadoSelect = true,
+    includeQuickFilter = true,
+    stateKeys = null,
+    sort = true,
+    customPredicate = null,
+  } = opts || {};
+
+  const filters = readDomFilterSnapshot();
+  let rows = applyPatientFilters(DB.rows, filters, {
+    includeSearch,
+    includeClinic,
+    includeObraSocial,
+    includeEstadoSelect,
+    includeQuickFilter,
+    stateKeys,
+    customPredicate,
   });
 
   if (sort) {
